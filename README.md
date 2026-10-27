@@ -5,7 +5,7 @@ This Shiny application provides an interactive interface for exploring gene expr
 ## 📌 Features
 
 - 📊 Interactive **gene expression plots** across different doses and timepoints
-- 🔍 **Gene selection** with live filtering and search
+- 🔍 **radiation type, timepoint, and gene selection** with live filtering and search
 - 🎨 **Color-coding** by metadata: sex, donor, or dose
 - 🧩 Support for **multiple gene plots** at once
 - 🖱️ Mouse-over **tooltips** using Plotly with sample-level detail
