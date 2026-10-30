@@ -46,6 +46,36 @@ anno_list <- list(
 
 # choices for the neutron/X-ray dropdowns (taken from the data)
 nx_radiation_choices <- sort(unique(as.character(colData(dds_nx)[[nx_radiation_col]])))
+# global color palettes: one fixed color per level, across both datasets ------
+color_vars <- c("Sex", "Donors", "Dose")
+
+all_levels <- function(var) {
+  u <- unique(unlist(lapply(list(dds_phybion, dds_nx), function(d) {
+    if (var %in% colnames(colData(d))) as.character(colData(d)[[var]])
+  })))
+  if (var == "Dose") {
+    num <- suppressWarnings(as.numeric(gsub("[^0-9.]", "", u)))
+    u <- u[order(!is.na(num), num)]
+  } else {
+    u <- sort(u)
+  }
+  u
+}
+
+make_palette <- function(lv) {
+  base <- RColorBrewer::brewer.pal(8, "Set2")
+  cols <- if (length(lv) <= 8) base[seq_along(lv)] else colorRampPalette(base)(length(lv))
+  setNames(cols, lv)
+}
+
+color_palettes <- lapply(setNames(color_vars, color_vars), function(v) make_palette(all_levels(v)))
+
+# fixed sex colors: male = blue, female = pink
+sex_lv <- all_levels("Sex")
+color_palettes$Sex <- setNames(
+  ifelse(grepl("^f", sex_lv, ignore.case = TRUE), "#E75480", "#4A90D9"),
+  sex_lv
+)
 
 # defining helper functions -----------------------------------------------
 
@@ -104,7 +134,7 @@ plot_gene_modified <- function(dds_list, genes, intgroup = "condition", assay = 
       theme_minimal(base_size = 14) +
       labs(title = gene_name, x = "", y = ifelse(transform, "Normalized counts (log10)", "Normalized counts"),
            color = color_by) +
-      scale_color_brewer(palette = "Set2") +
+      scale_color_manual(values = color_palettes[[color_by]], na.value = "grey50") +
       {
         if (transform) scale_y_log10() else scale_y_continuous()
       }
