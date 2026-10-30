@@ -21,7 +21,9 @@ dds_phybion <- estimateSizeFactors(dds_phybion)
 
 # dataset 2: neutron vs. X-ray
 dds_nx <- readRDS("data/dds_neutron_xray.RDS") 
+colnames(colData(dds_nx))[6] <- "Donors"
 dds_nx$Dose <- factor(dds_nx$Dose, levels = c("0Gy", "0.1Gy", "0.25Gy", "0.5Gy", "1Gy", "2Gy", "4Gy"))
+design(dds_nx) <- ~Donors + group
 dds_nx <- estimateSizeFactors(dds_nx)
 dds_nx$Time_point <- factor(dds_nx$Time_point, levels = c("6h", "24h"))
 
