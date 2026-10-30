@@ -63,8 +63,9 @@ all_levels <- function(var) {
 }
 
 make_palette <- function(lv) {
-  base <- RColorBrewer::brewer.pal(8, "Set2")
-  cols <- if (length(lv) <= 8) base[seq_along(lv)] else colorRampPalette(base)(length(lv))
+  base <- c("#E69F00", "#009E73", "#CC79A7", "#D55E00",
+            "#F0E442", "#56B4E9", "#0072B2", "#000000")
+  cols <- if (length(lv) <= length(base)) base[seq_along(lv)] else colorRampPalette(base)(length(lv))
   setNames(cols, lv)
 }
 
@@ -75,6 +76,13 @@ sex_lv <- all_levels("Sex")
 color_palettes$Sex <- setNames(
   ifelse(grepl("^f", sex_lv, ignore.case = TRUE), "#E75480", "#4A90D9"),
   sex_lv
+)
+
+# donor colors
+donor_base <- c("#0072B2", "#009E73", "#CC79A7")
+color_palettes$Donors <- c(
+  donor_1 = "#0072B2", donor_2 = "#009E73", donor_3 = "#CC79A7",
+  A = "#0072B2", S = "#009E73", F = "#CC79A7"
 )
 
 # defining helper functions -----------------------------------------------
